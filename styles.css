@@ -435,6 +435,51 @@ body {
   color: #fff
 }
 
+/* ── Quantity stepper ── */
+.qty_stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px;
+  background: linear-gradient(135deg, rgba(167,139,250,0.35), rgba(96,165,250,0.35));
+  border: 1px solid rgba(167,139,250,0.55);
+  border-radius: 8px;
+}
+
+.qty_btn {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.qty_btn:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+.qty_btn:active {
+  transform: scale(0.9);
+}
+
+.qty_val {
+  flex: 1;
+  text-align: center;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  user-select: none;
+}
+
 .product_grid.loading{
 
   animation: blink 1s ease infinite;

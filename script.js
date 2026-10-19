@@ -12,9 +12,54 @@ const number_of_products = document.querySelector(".count")
 const sort_select = document.querySelector(".sort_select")
 
 // ── State ──
-const cartItems = new Set()
+const cartQty = new Map()
 let currentData = [...data]
 let currentSort = "featured"
+
+// ── Cart counter ──
+function cartTotal() {
+  let total = 0
+  cartQty.forEach((qty) => { total += qty })
+  return total
+}
+
+function updateCartBadge() {
+  cart_count.textContent = cartTotal()
+}
+
+function setQty(shoe_name, qty) {
+  if (qty <= 0) {
+    cartQty.delete(shoe_name)
+  } else {
+    cartQty.set(shoe_name, qty)
+  }
+
+  updateCartBadge()
+
+  grid.querySelectorAll(".add_wrap").forEach((wrap) => {
+    if (wrap.dataset.shoe === shoe_name) renderCartControl(wrap, shoe_name)
+  })
+}
+
+function renderCartControl(wrap, shoe_name) {
+  const qty = cartQty.get(shoe_name) || 0
+
+  if (qty === 0) {
+    wrap.innerHTML = '<button class="add_btn" type="button">Add to Cart</button>'
+    wrap.querySelector(".add_btn").addEventListener("click", () => setQty(shoe_name, 1))
+    return
+  }
+
+  wrap.innerHTML = `
+    <div class="qty_stepper active">
+      <button class="qty_btn qty_dec" type="button" aria-label="Decrease quantity">−</button>
+      <span class="qty_val">${qty}</span>
+      <button class="qty_btn qty_inc" type="button" aria-label="Increase quantity">+</button>
+    </div>`
+
+  wrap.querySelector(".qty_dec").addEventListener("click", () => setQty(shoe_name, qty - 1))
+  wrap.querySelector(".qty_inc").addEventListener("click", () => setQty(shoe_name, qty + 1))
+}
 
 // ── Functions ──
 function actual_data(input_data) {
@@ -31,26 +76,9 @@ function actual_data(input_data) {
     card.querySelector(".product_name").textContent = item.shoe_name
     card.querySelector(".product_price").textContent = item.price_in_rupee
 
-    const add_to_cart = card.querySelector(".add_btn")
-
-    if (cartItems.has(item.shoe_name)) {
-      add_to_cart.classList.add("active")
-      add_to_cart.textContent = "Added to cart 🛒"
-    }
-
-    add_to_cart.addEventListener("click", () => {
-      const isActive = add_to_cart.classList.toggle("active")
-
-      if (isActive) {
-        cartItems.add(item.shoe_name)
-        add_to_cart.textContent = "Added to cart 🛒"
-      } else {
-        cartItems.delete(item.shoe_name)
-        add_to_cart.textContent = "Add to Cart"
-      }
-
-      cart_count.textContent = cartItems.size
-    })
+    const add_wrap = card.querySelector(".add_wrap")
+    add_wrap.dataset.shoe = item.shoe_name
+    renderCartControl(add_wrap, item.shoe_name)
 
     grid.append(card)
   })
